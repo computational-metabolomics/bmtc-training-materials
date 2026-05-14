@@ -1,0 +1,165 @@
+# DatasetExperiment objects
+
+:::: {.learn .panel}
+
+::: content
+
+- learn about the DatasetExperiment object
+- find out why we use the DatasetExperiment object
+- use a DatasetExperiment object containing example metabolmics data
+
+:::
+::::
+
+## The DatasetExperiment template
+
+The `DatasetExperiment` template defines the format data should be in in order to be compatible with other `struct` objects. By ensuring that the input data follows a strict template, `struct` can ensure that the data is compatible with all steps in a workflow.
+
+The `DatasetExperiment` template consists of three key elements: data, sample_meta and variable_meta.
+
+:::: {.panel .blank}
+
+::: {.content .topmargin}
+
+- **data: a table of peak areas/heights** <br>
+    The `DatasetExperiment` template defines that the data should be formatted as a `data.frame` with features (metabolites) in the columns, and samples in the rows. Each row of the `data.frame` therefore contains the peak areas for all metabolites measured in that sample.
+
+:::
+
+::: {.content .topmargin}
+
+- **sample_meta: meta data for the samples** <br>
+    Contains information about the samples _in addition_ to the sample names. It can come in many forms. For example it could be categorical: e.g. whether the sample was a control sample or a treated sample, or it could be continuous: e.g. the BMI of the subject. The `DatasetExperiment` template defines that the sample meta data should be a `data.frame` where the samples are in rows, and each column corresponds to one piece of meta data.
+
+:::
+
+::: {.content .topmargin}
+
+- **variable_meta: meta data for the features** <br>
+    Like the sample meta data except that it contains additional information about each feature (variable, metabolite), such as m/z and retention time, or maybe annotation information. The `DatasetExperiment` template defines that this should be a `data.frame` where the features are in rows and the columns correspond to on piece of meta data.
+
+:::
+::::
+
+The above definitions are for untargeted metabolomics, but the format is compatible with other data types provided you can arrange the data into a table with samples in rows and variables in column. For example, the data for an NMR study might have total areas for each ppm bucket in the data table instead of metabolite peak areas, and ppm ranges in the variable meta-data instead of m/z and retention time.
+
+## Iris DatasetExperiment object
+
+For the `struct` package Fisher's classic Iris dataset has been converted to DatasetExperiment format. You can import it into your environment as follows:
+
+```{r}
+# import fishers iris data
+DE = iris_DatasetExperiment()
+```
+
+We can examine the DE object in your environment using the `show` command.
+
+```{r}
+show(DE)
+```
+From this output you can see that the DE object has a `name` and a `description` defined. These fields are common to all struct objects and can be accessed using dollar notation:
+
+```{r}
+DE$name
+DE$description
+```
+Fields (formally called "slots") in a `struct` object can be assigned new values using the similar notation:
+
+```{r}
+# change the name
+DE$name  = 'Fisher/Anderson Iris dataset'
+# show updated object
+DE
+```
+
+:::: {.note .panel}
+
+::: content
+The default output is to show the contents of the object, so we were lazy and skipped a specific call to `show`. 
+:::
+::::
+
+For this `DatasetExperiment` object we can see that there are 4 columns of data for 150 samples. There is a single column of meta data for the samples, and a single column of meta data for the variables. These slots can be accessed in the same way as the other slots, using dollar notation. Here we show the first 6 rows of the data.
+
+```{r}
+head(DE$data)
+```
+
+## Exercise
+
+:::: {.task .panel}
+
+::: title
+MTBLS79 DatasetExperiment
+:::
+
+::: {.content}
+In this exercise you will be able to test your understanding of DatasetExperiment objects.
+:::
+
+::: {.expandable}
+Task
+:::
+
+::: {.content .collapsed}
+The `structToolbox` packages provides the MTBLS79 dataset as an example `DatasetExperiment` object.
+
+1. find out about `MTBLS79_DatasetExperiment()` using the package documentation.
+2. import MTBLS79 into your environment and display a summary of the contents.
+3. update the description to better reflect to documentation.
+4. compare the data with `filtered = TRUE` to the data when `filtered = FALSE`.
+:::
+  
+::: {.expandable .hint}
+Hints
+:::
+
+::: {.content .collapsed}
+- You can view the help by preceding the function name with a question mark
+- all slots of a DatasetExperiment can be accessed using `$` notation
+- how many rows/columns does each dataset have?
+:::
+
+::: {.expandable .answer}
+Solutions
+:::
+
+::: {.content .collapsed}
+1. We can append a question mark to the function name to obtain documentation for a function.
+
+    ```{r, eval = FALSE}
+    # display documentation for MTBLS79
+    ?MTBLS79_DatasetExperiment()
+    ```
+
+    Note that in R studio the documentation will be displayed in the `help` tab 
+    (default location is a tab in the bottom right panel).
+
+2. The `show` function summarises the contents of a `struct` object.
+
+    ```{r}
+    # use show to display a summary of contents
+    DE = MTBLS79_DatasetExperiment()
+    show(DE)
+    ```
+
+3. We can use dollar notation to get and set values for a slot.
+
+    ```{r}
+    # update description e.g.
+    DE$description = 'A systematic evaluation of the reproducibility of a multi-batch DIMS metabolomics study of cardiac tissue extracts'
+        show(DE)
+    ```
+
+4. We can use `filtered = TRUE` as an input to the function and compare the output of show for the filtered and unfiltered data.
+
+    ```{r}
+    DEfiltered = MTBLS79_DatasetExperiment(filtered=TRUE)
+    show(DEfiltered)
+    ```
+
+    The unfiltered data has 172 samples and 2063 features. After filtering the dataset has 1579 features.
+:::
+
+::::
+

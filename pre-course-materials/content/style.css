@@ -1,0 +1,190 @@
+p {
+    text-align: justify;
+}
+
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+p code {
+  white-space: inherit;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+}
+
+.collapsed ol li:last-child {
+    border-bottom: 0px;
+    padding-top: 1em;
+    padding-bottom: 0em;
+}
+
+.collapsed ol li {
+    border-bottom: 0px solid var(--select-colour);
+    padding-top: 1em;
+    padding-bottom: 0.5em;
+}
+
+.console{
+/*  box-shadow: 0 -0.5em #212121; */
+/*  margin-top: 1em; */
+  background-image: url("output_symbol.svg") !important;
+  background-position: right 0.5em top 0.5em !important;
+  background-repeat: no-repeat !important;
+  background-size: auto 1em !important;
+}
+
+.rcode{
+/*  box-shadow: 0 -0.5em #304FFE; */
+/*  margin-top: 1em !important; */
+  background-image: url("code_symbol.svg") !important;
+  background-position: right 0.5em top 0.5em !important;
+  background-repeat: no-repeat !important;
+  background-size: auto 1em !important;
+  font-size: 1em !important;
+}
+
+.panel{
+    border-radius: 0.5em;
+    background-color: var(--panel-colour);
+    border: 0px;
+    padding: 0.5em;
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 0.15em;
+    margin-bottom: 1.275em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.panel:not(:has(.title))::before{
+    content: var(--panel-txt);
+}
+
+
+.comment {
+    position: absolute;
+}
+
+.critical {
+    --panel-colour: #FFCDD2;
+    --select-colour: #E57373;
+    --panel-txt: "Important";
+}
+
+.note {
+    --panel-colour: #B2DFDB;
+    --select-colour: #4DB6AC;
+    --panel-txt: "Note";
+}
+
+.learn {
+    --panel-colour: #B3E5FC;
+    --select-colour: #4FC3F7;
+    --panel-txt: "Learning Objectives";
+}
+
+.task {
+    --panel-colour: #FFF59D;
+    --select-colour: #FFD54F;
+    --panel-txt: "Exercise";
+}
+
+.hint {
+    --select-colour: #FFC107;
+}
+
+.answer {
+    --select-colour: #FFA000;
+}
+
+.blank {
+    --panel-colour: #E0E0E0;
+    --select-colour: #9E9E9E;
+    --panel-txt: "";
+}
+
+.expandable {
+  background-color: var(--select-colour);
+  color: black;
+  cursor: pointer;
+  width: 100%;
+  border: 0.5em solid var(--select-colour);
+  box-shadow: 0 -0.5em var(--panel-colour);
+  margin-top: 1em;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  padding: 0.5em;
+  font-weight: bold;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  border-bottom-left-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+}
+
+img[alt=bmtclogo] {
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.nav_logo {
+    padding: 3em;
+}
+
+.expanded, .expandable:hover {
+  background-color: var(--select-colour);
+}
+
+.expanded{
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.collapsed {
+      display: none;
+      border: 0.5em solid var(--select-colour);
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+}
+
+.content {
+    background-color: #FFFFFF;
+    border: 0px;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    font-size: 15px;
+    font-weight: normal;
+    border-radius: 0.5em;
+}
+
+.expandable:before {
+content: "\f0d7\00A0";
+  color: grey;
+  font-weight: bold;
+  float: right;
+  font-family: fontawesome;
+}
+
+.expanded:before {
+  content: '\f0d8\00A0';
+  color: grey;
+  float: right;
+  font-family: fontawesome;
+}
+
+.topmargin:first-child{
+        margin-top:0em;
+}
+
+.topmargin {
+    margin-top:1em;
+}
+
+
+           

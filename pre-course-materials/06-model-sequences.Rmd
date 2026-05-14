@@ -1,0 +1,217 @@
+# Model sequences
+
+:::: {.learn .panel}
+
+::: content
+- Describe the model sequence (`model_seq`) template
+- Create and use model sequences to implement a workflow
+- Access individual workflow steps
+- Apply a model sequence to an example dataset
+:::
+
+::::
+
+## The `model_seq` template
+
+The purpose of the model sequence template is to allow you to chain together `model` objects into a workflow (or sequence) and then apply the entire sequence to a dataset in a single step.
+
+In Modules 6 and 7 you will have applied several models in a row through multiple uses of `model_apply`, and passing the output data from one model into the next using the `predicted` method. Model sequences can do this for you.
+
+We can create a model sequence by "adding" models to the sequence. For example, it is common practice to mean centre before PCA. 
+
+```{r}
+# prepare model sequence
+MS = mean_centre() + PCA()
+
+# summarise sequence
+show(MS)
+```
+
+If you are familiar with ggplot, then adding models to a sequence is similar to adding layers to a plot. When models are added together they automatically become a `model_seq` object.
+
+```{r}
+class(MS)[1]
+```
+
+## Applying model sequences
+
+When `model_apply` is used with a model sequence, the data is input into the first model of the sequence. That model is applied to the data, and then the output of the model is used as the input to the next model. For our PCA example this means that the data is mean centred, and the then the mean centred data is used as input to PCA.
+
+```{r}
+# apply model sequence to iris data
+MS = model_apply(MS,iris_DatasetExperiment())
+```
+
+The output of a `model` object is specified by the `pred` slot, which names the output slot used as input to the next model in a sequence. This should always be a `DatasetExperiment` object, or the model sequence will fail.
+
+The name of output data from a model can be displayed using the `predicted_name` function.
+
+```{r}
+# example object
+M = mean_centre()
+
+# default output for sequences
+predicted_name(M)
+```
+::: {.note .panel}
+
+:::: content
+`chart` objects cannot be used in a model sequence.
+::::
+:::
+
+## Indexing steps in a sequence
+
+Formally, model steps in a sequence are stored in a list of the `model_seq` object. You can access it using `models` method. However, it often easier to access individual steps through the use of indexing. For example, the first model of the sequence can be extracted using square brackets:
+
+```{r}
+# get first model of sequence
+M = MS[1]
+M
+```
+If the model sequence has been trained (or applied) then the indexed model will contain all outputs for that step in the sequence. This is useful if e.g. we want to produce plots and charts for the data and objects at different stages of a workflow.
+
+```{r}
+# prepare a plot
+C = DatasetExperiment_factor_boxplot(
+        feature_to_plot = 1,
+        factor_names = 'Species')
+
+# get mean centered data from first model step
+DEmc = predicted(MS[1])
+
+# plot C for the data mean centred data
+chart_plot(C,DEmc)
+```
+
+This approach also means that all steps are available _after_ applying the workflow. We can therefore branch off from the workflow at any point and use the partly processed data as input into a different sequence, for example. We can also keep a record of all processing steps, and explore their impact on the data. This comes at the cost of higher computation resources required to store all of the results and pass then between methods.
+
+
+## Exercise
+
+::: {.task .panel}
+
+::: title
+Model sequences
+:::
+
+:::: content
+In this exercise you will construct a workflow, apply it to some data and then generate some plots for the different steps. You will create a number of models that might be unfamiliar to you. Don't worry if you dont know what these steps are yet, the idea is to give you practice using model sequences; details of the steps used are not critical for this exercise.
+
+Use the default input values for objects unless specified.
+::::
+
+::: {.expandable .task}
+Tasks
+:::
+
+::: {.content .collapsed}
+1. Import the filtered MTBLS79 dataset.
+2. Create a model sequence with the following steps (in order) and print a summary of the sequence you have created to the console:
+    a. Normalise the data using the `pqn_norm` object. Use the following inputs:
+        - `ref_method = "mean"`
+        - `factor_name = "Class"`.
+    b. Impute missing values using kNN imputation with 5 neighbours.
+    c. Mean centre the data
+    d. Apply PCA (at least 2 components)
+3. What output of the second step in your sequence is used as the input to the third step?
+4. Use indexing to compare a `tic_plot` of the data before and after applying the PQN step of the workflow. What do you notice about the QC samples? For the `tic_plot` object use the following inputs:
+    - `run_order = "run_order"`
+    - `connected = TRUE`
+5. Apply PCA after the imputation step, and compare the PCA scores plot to your original workflow.
+
+:::
+
+:::: {.expandable .hint}
+Hints
+::::
+
+:::: {.content .collapsed}
+- Useful models: `pqn_norm`, `knn_impute`, `mean_centre`, `PCA`
+- Useful charts: `tic_plot`, `pca_scores_plot`
+- Useful methods: `model_apply`, `predicted`, `predicted_name`
+- Use indexing to access steps of a sequence for models you have already created
+- Dont foret to apply your sequence to the data before generating plots
+- Add titles etc to your plots if you want to
+::::
+
+:::: {.expandable .answer}
+Solutions
+::::
+
+:::: {.content .collapsed}
+1. The data can be imported exactly as we did for Module 5.
+
+    ```{r}
+    DE = MTBLS79_DatasetExperiment(filtered = TRUE)
+    ```
+
+2. Create a model sequence by "adding" multiple models together. We can create a summary using `show`.
+
+    ```{r}
+    # prepare model sequence
+    MS = pqn_norm(
+            factor_name = "Class",
+            ref_method = "mean") +
+         knn_impute(
+             neighbours = 5) +
+         mean_centre() +
+         PCA(
+             number_components = 2)
+    
+    # print to console
+    show(MS)
+    ```
+
+3. We can use the `predicted_name` method and indexing to obtain the name of the output of the second step in the sequence:
+
+    ```{r}
+    predicted_name(MS[2])
+    ```
+
+4. We can create a single `tic_chart` object and then use it with different datasets to compare the outputs. We havent applied your sequence to any data yet, so we do it now.
+
+    ```{r,fig.height = 3, fig.width = 7}
+    # apply model sequence
+    MS = model_apply(MS,DE)
+    
+    # prepare chart object
+    C = tic_chart(
+            run_order = 'run_order',
+            factor_name = 'Class',
+            connected=TRUE)
+
+    # plot for raw input data
+    chart_plot(C,DE)
+    
+    # plot for normalised data
+    chart_plot(C,predicted(MS[1]))
+    ```
+
+    We used `predicted` and indexing to get the data after normalisation. After normalisation the QCs have more similar total peak area because differences in concentration have been accounted for by the normalisation.
+    
+5. We can use indexing to apply a new PCA model to the output of the kNN step, and then generate a PCA plot for each PCA object.
+
+    ```{r}
+    # new PCA object
+    P = PCA(number_components = 2)
+    
+    # apply to imputed data from model sequence
+    P = model_apply(P,predicted(MS[2]))
+    
+    # prepare chart
+    C = pca_scores_plot(factor_name = 'Class')
+    
+    # plot for original workflow PCA
+    chart_plot(C,MS[4]) + ggtitle('Original workflow')
+    
+    # plot for new PCA
+    chart_plot(C,P) + ggtitle("Branched from kNN")
+    ```
+
+::::
+
+
+:::
+
+

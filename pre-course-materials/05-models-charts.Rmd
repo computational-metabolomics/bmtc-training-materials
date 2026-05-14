@@ -1,0 +1,355 @@
+# Model objects
+
+::: {.learn .panel}
+
+:::: content
+- Define `model` objects
+- Learn about methods specific to model objects
+- apply a model to a DatasetExperiment object
+::::
+
+:::
+
+## The `model` template
+
+The `model` template defined by `struct` is the fundamental building block of data processing workflows using `struct`. The model template itself isn't used directly; it is extended by model specific templates. It is used to define methods and slots common to all models so that they can function together in a workflow.
+
+For example, in the last module we introduced the PCA object. It is a model object, which itself is derived from the the `struct_class` template. Because of this all `struct_class` and `model` methods work for the `PCA` object. By extending the `model` template the `PCA` object provides PCA specific input parameters, such as `number_components`, and overrides default methods (such as `model_train`; see next section) to apply PCA specific calculations.
+
+### `model` object methods
+The `model` template defines four key methods used by all models:
+
+1. The `model_train` method. This method allows you to train a model using an input dataset. For example, we might train a PCA model using the iris dataset. Or we might calculate a threshold based on some training data. Some `output` slots of a model object will be populated after `model_train` is used.
+
+2. The `model_predict` method. This method allows you to apply a trained model to a second dataset. For the PCA example this means projecting the new data on to the existing model (instead of training a new one). Or for the second example we might remove samples below the computed threshold. Some `output` slots of a model object will be populated after `model_predict` is used.
+
+3. The `model_apply` method. This method applies `model_predict` immediately after `model_train` to the same data (sometimes called "autoprediction"). For the PCA example we might use this if we want to explore the training data in more detail. For the second example we might want to filter our training data based on the threshold we calculated.
+
+4. The `predicted` method. This method returns the `pred` slot of a model object. This is the default output of the object when connecting models in a workflow (we will discuss this further in a future section)
+
+### Applying models
+To use any of the first three methods above we have to provide a model, and a dataset. For example, to apply PCA to the Iris dataset:
+
+```{r}
+# prepare data
+DE = iris_DatasetExperiment()
+
+# prepare model
+M = PCA(number_components = 2)
+
+# apply model M to data DE
+M = model_apply(M,DE)
+```
+
+The PCA model has extended the `model` template by providing PCA specific input and output parameters, and providing `model_train` and `model_predict` methods that apply PCA to the input data when the input model to those method is a PCA model.
+
+::: {.note .panel}
+
+:::: content
+The data must be in `DatasetExperiment` format, and the model must be based on the `model` template for the `model_apply` method to work.
+::::
+:::
+
+To use the `predicted` method we only need to provide the model we want the results from.
+
+```{r}
+predicted(M)
+```
+
+## Exercise
+
+::: {.task .panel}
+
+:::: title
+Apply PCA to the MTBLS79 Dataset
+::::
+
+:::: content
+In this exercise you will create a PCA object and apply it to the MTBLS79 dataset. 
+PCA doesnt support missing values, so we need to impute (estimate) them, which can do using the `knn_impute` model.
+
+1. Import the filtered MTBLS79 dataset into your environment
+2. Create a `knn_impute` model with 5 neighbours and apply it to the MTBLS79 data.
+3. Create a `PCA` model with 8 components and apply it to the **imputed** MTBLS79 data
+4. Print a summary of the computed PCA scores to the console 
+5. How would the PCA scores compare using `model_train` and `model_predict` instead of `model_apply`?
+:::: 
+
+:::: expandable
+Hints
+::::
+
+:::: {.content .collapsed}
+- see `?knn_impute` for help using this object
+- see `?predicted` 
+::::
+
+:::: expandable
+Solutions
+::::
+
+:::: {.content .collapsed}
+1. We can import this data exactly as we did in Module 5, with the `filtered = TRUE` input.
+
+    ```{r}
+    # import data
+    DE = MTBLS79_DatasetExperiment(filtered = TRUE)
+    ```
+
+2. The `knn_impute` object uses the `model` template, so we can apply it using `model_apply`. We can specify the number of neighbours; other parmaters will use the default values unless provided.
+
+    ```{r}
+    # prepare the model
+    K = knn_impute(neighbours = 5)
+    
+    # apply model K to data DE
+    K = model_apply(K,DE)
+    ```
+
+3. We can create the PCA model exactly as we did in Module 4. We apply it to the `predicted` output of the `knn_impute` object, which contains the imputed data.
+
+    ```{r}
+    # prepare PCA model
+    P = PCA(number_components = 8)
+    
+    # apply M to imputed data
+    P = model_apply(P,predicted(K))
+    ```
+
+4. The `scores` slot of the PCA model is a `DatasetExperiment` object, so we can use the `show` method to summarise it on the console.
+
+    ```{r}
+    show(P$scores)
+    ```
+5. The `model_apply` method is shorthand for using `model_train` followed immediately by `model_predict`, so the PCA scores will be identical.
+
+    ```{r}
+    # train the model
+    N = model_train(P,predicted(K)) # NB stored in a new variable
+    
+    # use the *trained model N* to get predictions for training data
+    N = model_predict(N,predicted(K))
+    
+    # check all scores are identical to using model_apply
+    all(P$scores$data == N$scores$data) # expect TRUE
+    ```
+::::
+
+:::
+
+# Chart objects
+
+::: {.learn .panel}
+
+:::: content
+- Define `chart` objects
+- Learn about methods specific to chart objects
+- plot a chart for example DatasetExperiment and model objects
+::::
+
+:::
+
+## The `chart` template
+The chart template provides a mechanism to generate standardised graphics for input objects. Most frequently charts are designed for `DatasetExperiment` objects and specific `model` objects, like PCA.
+
+### `chart` methods
+
+The chart template defines a key method for all charts: `chart_plot`. 
+
+This method defines the chart to be plotted. Like for model objects, this method is provided by extending the chart template. For example, the `pca_scores_plot` chart object provides a `chart_plot` method that takes a PCA object as input and generates a PCA scores plot from it.
+
+```{r, fig.width = 4, fig.height = 5}
+# prepare chart object
+C = pca_scores_plot(factor_name = 'Species')
+
+# plot chart C for model M
+chart_plot(C,M)
+```
+
+The `factor_name` input specifies a column of the `sample_meta` data from the iris dataset to use as a basis for colouring the groups in the plot.
+
+::: {.note .panel}
+
+:::: content
+The `scores` being plotted are formatted as a `DatasetExperiment` object, and the meta data has been inherited from the input data (iris data in this case). 
+
+You could use the `scatter_chart` object with `M$scores` as the second input for `chart_plot` to obtain a similar plot. 
+::::
+
+:::: expandable
+Example
+::::
+
+:::: {.content .collapsed}
+```{r, fig.width = 4, fig.height = 5}
+# prepare chart
+N = scatter_chart(factor_name = 'Species')
+
+# plot chart N for scores of M
+chart_plot(N,M$scores)
+```
+The advantage of using an object specific chart (like `pca_scores_plot`) is that the chart can automatically include outputs that require the input objects to calculate (like percent variance for PCA), which you would otherwise have to calculate and add to the plot manually.
+::::
+
+:::
+
+## Modifying charts
+
+Charts can be defined for any input object, not just models. For example, the `DatasetExperiment_factor_boxplot` chart generates a boxplot for a named column of a `DatasetExperiment` object. Here, we use it to generate a boxplot of the `Petal.Width` column and separate/colour the boxes according to the Species factor.
+
+```{r}
+# prepare chart object
+C = DatasetExperiment_factor_boxplot(
+        feature_to_plot = 'Petal.Width',
+        factor_names = 'Species')
+
+# plot C for iris data
+chart_plot(C,iris_DatasetExperiment())
+```
+
+Sometimes, you will want to make changes to the plot, such as adding titles, axis labels, legend position, etc. The output for all chart objects is a `ggplot` object, so you can add to it after the `chart_plot` call. For example, here we add the missing y-axis label.
+
+```{r}
+# plot C for iris data
+chart_plot(C,iris_DatasetExperiment()) + ylab('Petal.Width')
+```
+
+::: {.note .panel}
+
+:::: content
+If you want to make more complex changes, or generate your own plots, then you will need to e.g. use ggplot and extract data from the objects yourself. If you use the chart a lot, consider wrapping it into a new chart object; refer to the `struct` package vignettes [here](https://bioconductor.org/packages/release/bioc/html/struct.html) if you are interested in how to do this.
+::::
+:::
+
+## Exercise
+
+:::: {.task .panel}
+
+::: title
+PCA scores plot for MTBLS79 data
+:::
+
+::: content
+In this exercise you will use chart objects to explore the effects of processing on the MTBLS79 dataset. Use the default inuts for each object unless pecified.
+:::
+
+::: {.expandable .task}
+Tasks
+:::
+
+::: {.content .collapsed}
+1. Import the filtered MTBLS79 data into your workspace
+2. Apply knn imputation (5 neighbours) to replace missing values, mean centre the data, and then apply PCA (at least 4 components).
+3. Create a PCA scores plot from the PCA object. Plot using the `Class` factor.
+    a. for components 1 and 2
+    b. for components 3 and 4
+4. Use the `mv_boxplot` object, with the settings below, and plot it for the data before and after knn imputation. What can you say about the features after imputation?
+    - Do not plot by sample. 
+    - Do not label outliers. 
+    - Plot using the `Class` factor.
+5. Use the `DatasetExperiment_factor_boxplot` chart to examine the feature labelled `"300.12775"` before and after mean centring. Add the missing y-axis labels and a title using ggplot. What has mean centring done to the data? Check by plotting some of the other features.
+    - Plot using the `Class` factor.
+
+:::
+
+::: {.expandable .hint}
+Hints
+:::
+
+::: {.content .collapsed}
+- Make sure you have activated the `ggplot2` library.
+- Useful model objects: `knn_impute`, `mean_centre`, `PCA`.
+- Useful chart objects: `pca_scores_plot`, `mv_boxplot`, `DatasetExperiment_factor_boxplot`.
+- Useful ggplot functions: `ylab`, `ggtitle`
+
+:::
+
+::: {.expandable .answer}
+Solutions
+:::
+
+::: {.content .collapsed}
+1. The data can be imported exactly as we did for Module 5.
+
+    ```{r}
+    DE = MTBLS79_DatasetExperiment(filtered = TRUE)
+    ```
+
+2. Apply each model one at a time, using the `predicted` method to get the data after each step.
+
+    ```{r}
+    # knn impute
+    K = knn_impute(neighbours = 5)
+    # apply
+    K = model_apply(K,DE)
+    
+    # mean centre
+    M = mean_centre()
+    # apply to imputed data
+    M = model_apply(M,predicted(K))
+    
+    # PCA
+    P = PCA(number_components = 4)
+    # apply to imputed and centred data
+    P = model_apply(P,predicted(M))
+    ```
+    
+3. We can select the components to plot using the `xcol` and `ycol` inputs to the `pca_scores_plot` object. Note that this object requires a PCA object as input to `chart_plot`.
+    ```{r}
+    # prepare chart object
+    C1 = pca_scores_plot(xcol = 1, ycol=2, factor_name = 'Class')
+    # plot for PCA object
+    chart_plot(C1,P)
+    
+    # prepare chart object
+    C2 = pca_scores_plot(xcol = 3, ycol=4, factor_name = 'Class')
+    # plot for PCA object
+    chart_plot(C2,P)
+    ```
+4. We can access the data after imputation using the `predicted` method. Note that we can use the same chart object, and plot it with different input data. We add titles using the `ggtitle` function.
+
+    ```{r, message=FALSE,warning=FALSE}
+    # prepare object
+    C = mv_boxplot(
+            by_sample = FALSE,
+            label_outliers = FALSE,
+            factor_name = 'Class'
+        )
+    
+    #  plot before imputation
+    chart_plot(C,DE) + ggtitle('Before imputation')
+    # plot after imputation
+    chart_plot(C,predicted(K)) + ggtitle('After imputation')
+    ```
+    The plots show that no features have missing values after imputation; imputation has replaced them all with an estimated value.
+    
+5. Mean centring sets the mean value of a feature equal to zero. You can see this by examining the change in the y-axis of the plots before and after.
+
+    ```{r}
+    # prepare chart
+    C = DatasetExperiment_factor_boxplot(
+            feature_to_plot = "300.12775", 
+            factor_name = 'Class')
+    # plot before
+    # note that the imputed data was used as input to mean centring, so we use that here
+    chart_plot(C,predicted(K)) + 
+        ggtitle('Before mean centring') + 
+        ylab('300.12775')
+    
+    # plot after
+    chart_plot(C,predicted(M)) + 
+        ggtitle('After mean centring') + 
+        ylab('300.12775')
+    ```
+    Mean centring is applied to all features, so any feature you choose will show the same effect. You can list the names of features for a `DatasetExperiment` using the `colnames` function:
+    
+    ```{r, eval=FALSE}
+    colnames(DE)
+    ```
+    
+    Alternatively the `DatasetExperiment_factor_boxplot` object accepts a column index as input (i.e. `feature_to_plot = 1` instead of `feature_to_plot = "70.03364"` will produce the same plot).
+
+
+:::
+
+::::

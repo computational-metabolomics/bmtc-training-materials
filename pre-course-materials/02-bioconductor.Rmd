@@ -1,0 +1,80 @@
+# Bioconductor
+
+:::: {.learn .panel}
+
+::: content
+- Learn about Bioconductor, a repository for R packages
+- Learn about the `BiocManager` package and how to use it to install R packages hosted by Bioconductor
+:::
+
+::::
+
+## What is Bioconductor?
+
+[Bioconductor](https://www.bioconductor.org/) is a repository of R packages. All Bioconductor packages are regularly built and tested to ensure that they are functioning correctly and meet certain standards. 
+
+For every new release of R a snapshot of the entire Bioconductor repository is stored and retained in order to make analysis reproducible at the time it was run.
+
+It is essential therefore that you keep up-to-date with the R version, otherwise you will not be able to use the latest version of packages in the Bioconductor repository.
+
+The `BiocManager` package ([link](https://www.rdocumentation.org/packages/BiocManager)) contains a small number of functions to install R packages from Bioconductor (and other repositories such as CRAN) and check that the versions are compatible with the version of R you are using.
+
+## Installing Bioconductor packages
+
+Using `BiocManager` to install the packages needed for this course will ensure that you are using the most recent release, and can also install the appropriate versions of all needed dependencies. 
+
+
+::: {.task .panel}
+
+::: title
+Install packages
+:::
+
+:::: content
+To install the packages for this course copy and paste the code below into the command line and press Enter:
+
+```{r, eval=FALSE}
+BiocManager::install(
+    c('struct','structToolbox','metabolomicsWorkbenchR'),
+    dependencies='suggests')
+```
+
+The `dependencies` input ensures that we install all suggested packages required to use the ones we are installing. There will be quite a few of them!
+
+You can check that the packages are installed and working by running the following code:
+
+```{r,message=FALSE,warning=FALSE}
+library('struct')
+library('structToolbox')
+library('metabolomicsWorkbenchR')
+```
+
+You might receive some (sometimes cryptic!) messages after activating the packages, but as long as you receive no error messages, then you are ready to go.
+::::
+:::
+
+## Additional packages
+In addition to the `struct` and `structToolbox` packages it is useful to load the `ggplot2` package. It will allow you to modify e.g. chart titles quickly and easily. It should have been installed already as a dependency of `structToolbox`, so you can just activate it for the current session.
+
+In addition you will need the following packages:
+
+```{r,message=FALSE,warning=FALSE}
+library(ggplot2)
+```
+
+In addition, you will also need make sure the following R packages are installed:
+
+ - `dplyr`
+ - `xcms`
+ - `MSnbase`
+ - `openxlsx`
+ - `RColorBrewer`
+ - `ggplot2`
+
+::: {.critical .panel}
+
+:::: content
+We _strongly_ recommend you continue to use `BiocManager:install` rather than `install.packages` to install additional packages if possible, even if they are not a Bioconductor package (e.g. CRAN packages). This will ensure that a version compatible with your R and Bioconductor versions is used.
+::::
+
+:::

@@ -38,9 +38,9 @@ jobs:
           with:
             packages: |
               cran::fontawesome
-            cran::ggplot2
-            bioc::struct
-            bioc::structToolbox
+              cran::ggplot2
+              bioc::struct
+              bioc::structToolbox
       
       - name: Render book
         working-directory: pre-course-materials

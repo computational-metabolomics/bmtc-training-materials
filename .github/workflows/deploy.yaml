@@ -41,6 +41,7 @@ jobs:
             cran::ggplot2
             bioc::struct
             bioc::structToolbox
+            bioc::metabolomicsWorkbenchR
       
       - name: Render book
         working-directory: pre-course-materials

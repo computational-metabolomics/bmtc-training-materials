@@ -35,12 +35,12 @@ jobs:
 
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-        packages: |
-          cran::fontawesome
-          cran::ggplot2
-          bioc::struct
-          bioc::structToolbox
+          with:
+            packages: |
+              cran::fontawesome
+            cran::ggplot2
+            bioc::struct
+            bioc::structToolbox
       
       - name: Render book
         working-directory: pre-course-materials
@@ -53,8 +53,8 @@ jobs:
         
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./pre-course-materials/docs
+          with:
+            path: ./pre-course-materials/docs
 
   deploy:
     needs: build

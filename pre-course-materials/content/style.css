@@ -186,5 +186,9 @@ content: "\f0d7\00A0";
     margin-top:1em;
 }
 
-
-           
+/* Separator before module 4 */
+.book .book-summary a[href="workflows-templates-and-objects.html"] {
+  border-top: 1px solid #00000012;
+  padding-top: 0.75em;
+  margin-top: 0.75em;
+}

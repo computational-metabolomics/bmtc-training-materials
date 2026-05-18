@@ -37,10 +37,10 @@ For Windows
 
 ::: {.content .collapsed}
 
-- Download R from the CRAN website.
+- Download R from the [CRAN website](https://www.r-project.org/).
 - Run the .exe file that was just downloaded
-- Go to the RStudio download page
-- Under Installers select RStudio x.yy.zzz - Windows Vista/7/8/10 (where x, y, and z represent version numbers) **The current release is R version 4.4.0**.
+- Go to the [RStudio download page](https://posit.co/download/rstudio-desktop)
+- Under Installers select RStudio x.yy.zzz - Windows 11 (where x, y, and z represent version numbers).
 - Double click the file to install it
 - Once it’s installed, open RStudio to make sure it works and you don’t get any error messages.
 
@@ -52,12 +52,12 @@ For MacOS
 
 ::: {.content .collapsed}
 
-- Download R from the CRAN website.
+- Download R from the [CRAN website](https://www.r-project.org/).
 - Select the .pkg file for the latest R version
 - Double click on the downloaded file to install R
 - It is also a good idea to install XQuartz (needed by some packages)
-- Go to the RStudio download page
-- Under Installers select RStudio x.yy.zzz - Mac OS X 10.6+ (64-bit) (where x, y, and z represent version numbers) **The current release is R version 4.4.0**.
+- Go to the [RStudio download page](https://posit.co/download/rstudio-desktop)
+- Under Installers select RStudio x.yy.zzz - Mac OS X 10.6+ (64-bit) (where x, y, and z represent version numbers).
 - Double click the file to install RStudio
 - Once it’s installed, open RStudio to make sure it works and you don’t get any error messages.
 
@@ -69,12 +69,12 @@ For Linux
 
 ::: {.content .collapsed}
 
-- Download R from the CRAN website.
+- Download R from the [CRAN website](https://www.r-project.org/).
 - Select the .pkg file for the latest R version
 - Double click on the downloaded file to install R
 - It is also a good idea to install XQuartz (needed by some packages)
-- Go to the RStudio download page
-- Under Installers select RStudio x.yy.zzz - Mac OS X 10.6+ (64-bit) (where x, y, and z represent version numbers) **The current release is R version 4.4.0**.
+- Go to the [RStudio download page](https://posit.co/download/rstudio-desktop)
+- Under Installers select RStudio x.yy.zzz (where x, y, and z represent version numbers) for your Linux distro.
 - Double click the file to install RStudio
 - Once it’s installed, open RStudio to make sure it works and you don’t get any error messages.
 
@@ -88,7 +88,7 @@ When you open RStudio your R version will be printed in the console on the botto
 Alternatively, you can type `sessionInfo()` into the console.
 Because the packages you will use are part of the Bioconductor repository you will need to ensure you have the latest version of R in order to ensure you are using the most up-to-date version of the packages.
 
-Compare your R version to the version listed [here](https://www.bioconductor.org/install/) for the current release. **The current release of Bioconductor is version 3.20; it works with R version 4.4.0.**
+Compare your R version to the version listed [here](https://www.bioconductor.org/install/) for the current release. **The current release of Bioconductor is version 3.23; it works with R version 4.6.0.**
 
 It is not necessary to remove old versions of R from your system, but if you wish to do so you can check [How do I uninstall R?](https://cran.r-project.org/bin/windows/base/rw-FAQ.html#How-do-I-UNinstall-R_003f)
 

@@ -192,3 +192,15 @@ content: "\f0d7\00A0";
   padding-top: 0.75em;
   margin-top: 0.75em;
 }
+
+.book .book-summary a[href="references.html"] {
+  border-top: 1px solid #00000012;
+  padding-top: 0.75em;
+  margin-top: 0.75em;
+}
+
+.book .book-summary a[href="introduction.html"] {
+  border-top: 1px solid #00000012;
+  padding-top: 0.75em;
+  margin-top: 0.75em;
+}

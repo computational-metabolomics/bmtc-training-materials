@@ -1,6 +1,6 @@
 --- 
 title: "Introduction to Untargeted Metabolomics Data Analaysis in R using struct and structToolbox packages"
-author: "Gavin Rhys Lloyd"
+author: "Gavin Rhys Lloyd, Ossama Edbali and Ralf Weber"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book

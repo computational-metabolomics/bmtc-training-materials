@@ -22,8 +22,8 @@ This repository contains training materials for the [BMTC](https://www.birmingha
 
 ## About BMTC
 
-The [Birmingham Metabolomics Training Centre (BMTC)](https://www.birmingham.ac.uk/facilities/metabolomics-training-centre) provides training to the metabolomics community in both analytical and computational methods
-We provide face-to-face and online metabolomics courses, from introductory courses for researchers new to metabolomics, through advanced hands-on learning opportunities. Our partnership with the [Phenome Centre Birmingham](https://www.birmingham.ac.uk/research/centres-institutes/phenome-centre-birmingham) enables us to provide vocational training courses in metabolomics, providing expert trainer assistance and guidance for our delegates.
+The [Birmingham Metabolomics Training Centre (BMTC)](https://www.birmingham.ac.uk/facilities/metabolomics-training-centre) provides training to the metabolomics community in both analytical and computational methods. 
+We provide face-to-face and online metabolomics courses, from introductory courses for researchers new to metabolomics, through advanced hands-on learning opportunities. Our partnership with [Phenome Centre Birmingham](https://www.birmingham.ac.uk/research/centres-institutes/phenome-centre-birmingham) enables us to provide vocational training courses in metabolomics, providing expert trainer assistance and guidance for our delegates.
 
 If you are interested in metabolomics then we have a course suitable for you, regardless of sector, career stage, or geographical location. Have a look on our [Course List page](https://www.birmingham.ac.uk/facilities/metabolomics-training-centre/course-list) today to get started.
 
